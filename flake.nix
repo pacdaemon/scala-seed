@@ -26,6 +26,7 @@
               scala-cli
               scalafmt
               visualvm
+              vscode
             ];
           };
       in {
