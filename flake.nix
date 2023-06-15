@@ -6,20 +6,12 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    flake-utils,
-  }: let
-    supportedSystems = [
-      "aarch64-darwin"
-      "aarch64-linux"
-      "x86_64-linux"
-      "x86_64-darwin"
-    ];
-  in
-    flake-utils.lib.eachSystem supportedSystems (
-      system: let
+  outputs = { self, nixpkgs, flake-utils, }:
+    let
+      supportedSystems =
+        [ "aarch64-darwin" "aarch64-linux" "x86_64-linux" "x86_64-darwin" ];
+    in flake-utils.lib.eachSystem supportedSystems (system:
+      let
         pkgs = import ./pkgs.nix nixpkgs system;
 
         makeShell = p:
@@ -32,6 +24,7 @@
               sbt
               scala-cli
               scalafmt
+              visualvm
             ];
           };
       in {
@@ -43,6 +36,5 @@
         };
 
         formatter = pkgs.default.alejandra;
-      }
-    );
+      });
 }
