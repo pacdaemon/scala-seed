@@ -12,7 +12,8 @@
         [ "aarch64-darwin" "aarch64-linux" "x86_64-linux" "x86_64-darwin" ];
     in flake-utils.lib.eachSystem supportedSystems (system:
       let
-        pkgs = import ./pkgs.nix nixpkgs system;
+        pkgs = import ./pkgs.nix nixpkgs { config = { allowUnfree = true; }; }
+          system;
 
         makeShell = p:
           p.mkShell {
