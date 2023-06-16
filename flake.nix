@@ -34,6 +34,7 @@
           java17 = makeShell pkgs.pkgs17;
           java11 = makeShell pkgs.pkgs11;
           java8 = makeShell pkgs.pkgs8;
+          platform-backend = makeShell pkgs.pkgs11open;
         };
 
         formatter = pkgs.default.alejandra;

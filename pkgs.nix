@@ -28,12 +28,14 @@ nixpkgs: system: let
   in
     import nixpkgs {
       inherit system overlays;
+      config.allowUnfree = true;
     };
 
   default = pkgs17;
   pkgs17 = makePackages "graalvm17-ce";
   pkgs11 = makePackages "graalvm11-ce";
+  pkgs11open = "openjdk11";
   pkgs8 = makePackages "openjdk8";
 in {
-  inherit default pkgs17 pkgs11 pkgs8;
+  inherit default pkgs17 pkgs11 pkgs11open pkgs8;
 }
