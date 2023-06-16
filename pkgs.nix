@@ -1,32 +1,27 @@
-nixpkgs: system: let
-  makeOverlays = java: let
-    millOverlay = final: prev: {
-      mill = prev.mill.override {
-        jre = final.jre;
+nixpkgs: system:
+let
+  makeOverlays = java:
+    let
+      millOverlay = final: prev: {
+        mill = prev.mill.override { jre = final.jre; };
       };
-    };
 
-    javaOverlay = final: _: {
-      jdk = final.${java};
-      jre = final.${java};
-    };
-
-    scalaCliOverlay = final: prev: {
-      scala-cli = prev.scala-cli.override {
-        # hardcoded because scala-cli requires 17 or above
-        jre = final.graalvm17-ce;
+      javaOverlay = final: _: {
+        jdk = final.${java};
+        jre = final.${java};
       };
-    };
-  in [
-    javaOverlay
-    scalaCliOverlay
-    millOverlay
-  ];
 
-  makePackages = java: let
-    overlays = makeOverlays java;
-  in
-    import nixpkgs {
+      scalaCliOverlay = final: prev: {
+        scala-cli = prev.scala-cli.override {
+          # hardcoded because scala-cli requires 17 or above
+          jre = final.graalvm17-ce;
+        };
+      };
+    in [ javaOverlay scalaCliOverlay millOverlay ];
+
+  makePackages = java:
+    let overlays = makeOverlays java;
+    in import nixpkgs {
       inherit system overlays;
       config.allowUnfree = true;
     };
@@ -34,8 +29,6 @@ nixpkgs: system: let
   default = pkgs17;
   pkgs17 = makePackages "graalvm17-ce";
   pkgs11 = makePackages "graalvm11-ce";
-  pkgs11open = "openjdk11";
+  pkgs11open = makePackages "openjdk11";
   pkgs8 = makePackages "openjdk8";
-in {
-  inherit default pkgs17 pkgs11 pkgs11open pkgs8;
-}
+in { inherit default pkgs17 pkgs11 pkgs11open pkgs8; }
